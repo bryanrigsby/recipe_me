@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Thanksgiving Recipes</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'thanksgiving_recipes_app/style/index.css' %}">
+</head>
+<body>
+    
+    <nav class="navbar navbar-trans sticky-top">
+        <a href="/main" class="navbar-brand btn btn-outline-light">Recipe-Me!</a>
+        <form action="/clear" method="POST">
+            {% csrf_token %}
+            <span class="text-white navbar-brand"><a href="/user_bio/{{user.id}}">Welcome {{user.first_name}} {{user.last_name}}</a></span>
+            <a href="/add_recipe_page" class="btn btn-sm btn-outline-light">Add Recipe</a>
+            <input class="btn btn-sm btn-outline-light" type="submit" value="Logout">
+        </form>
+    </nav>
+
+    <div class="container">
+        <div class="row top">
+          <div class="col">
+            <a data-type="countdown"
+                data-name="Countdown to Thanksgiving!"
+                data-bg_color="rgba(0, 0, 0, 0.0)"
+                data-name_color="rgba(245, 245, 245,1)"
+                data-border_color="rgba(0,0,0,0)"
+                data-digits_color="rgba(245, 245, 245,1)"
+                data-last_unit_color="rgba(245, 245, 245,1)"
+                data-dt="2019-11-28 12:30:55"
+                data-show_units="false"
+                data-timezone="America/Chicago"
+                style="display: block; width: 100%; position: relative; padding-bottom: 15%"
+                class="tickcounter"
+                href="//www.tickcounter.com"
+            ></a>
+        </div>
+      </div>
+
+    
+      <div class="row">
+          <div class="col-5">
+            <form action="/edit_recipe" method="POST">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="dish">Dish</label>
+                    <input type="text" class="form-control" id="dish" name="dish" value="{{recipe.dish}}">
+                  </div>
+                  <div class="form-group">
+                    <label for="ingredients">Ingredients</label>
+                    <textarea class="form-control" id="ingredients" cols="30" rows="5" name="ingredients">{{recipe.ingredients}}</textarea>
+                  </div>
+                  <div class="form-group">
+                      <label for="cook_time">Cook Time</label>
+                      <div class="row">
+                        <div class="col-6">
+                      <input type="text" class="form-control" id="cook_time" name="hours" value="{{recipe.hours}}">
+                    </div>
+                    <div class="col-6">
+                      <input type="text" class="form-control" id="cook_time" name="minutes" value="{{recipe.minutes}}">
+                    </div>
+                  </div>
+                </div>
+                    <div class="form-group">
+                        <label for="cost">Cost</label>
+                        <input type="text" class="form-control" id="cost" name="cost" value="{{recipe.cost}}">
+                    </div>
+                </div>
+                <div class="col-7">
+                  <div class="form-group">
+                      <label for="instructions">Instructions</label>
+                      <textarea class="form-control" id="instructions" cols="30" rows="14" name="instructions">{{recipe.instructions}}</textarea>
+                  </div>
+                  <input type="submit" class="btn btn-outline-light btn-sm float-right" value="Edit Recipe">
+                  <input type="hidden" name="edit" value="{{recipe.id}}">
+                </div>
+            </form>
+          </div>
+        </div>
+      
+          {% if messages %}
+          <ul class='messages'>
+              {% for message in messages %}
+                  <li {% if message.tags %} class='{{message.tags}}' {% endif %}> {{message }} </li>
+              {% endfor %}
+          </ul>
+          {% endif %}
+
+        </div>
+
+        
+
+
+
+        <script>(function(d, s, id) { var js, pjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//www.tickcounter.com/static/js/loader.js"; pjs.parentNode.insertBefore(js, pjs); }(document, "script", "tickcounter-sdk"));</script>
+      </body>
+      </html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Thanksgiving Recipes</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'thanksgiving_recipes_app/style/index.css' %}">
+    
+</head>
+<body>
+    <nav class="navbar navbar-trans sticky-top">
+        <a href="/main" class="navbar-brand btn btn-outline-light">Recipe-Me!</a>
+        <form action="/clear" method="POST">
+          {% csrf_token %}
+          <span class="text-white navbar-brand"><a href="/user_bio/{{user.id}}">Welcome {{user.first_name}} {{user.last_name}}</a></span>
+          <a href="/add_recipe_page" class="btn btn-sm btn-outline-light">Add Recipe</a>
+          <input class="btn btn-sm btn-outline-light" type="submit" value="Logout">
+        </form>
+    </nav>
+
+    <div class="container">
+      <div class="row top">
+        <div class="col">
+          <a data-type="countdown"
+              data-name="Countdown to Thanksgiving!"
+              data-bg_color="rgba(0, 0, 0, 0.0)"
+              data-name_color="rgba(245, 245, 245,1)"
+              data-border_color="rgba(0,0,0,0)"
+              data-digits_color="rgba(245, 245, 245,1)"
+              data-last_unit_color="rgba(245, 245, 245,1)"
+              data-dt="2019-11-28 12:30:55"
+              data-show_units="false"
+              data-timezone="America/Chicago"
+              style="display: block; width: 100%; position: relative; padding-bottom: 15%"
+              class="tickcounter"
+              href="//www.tickcounter.com"
+          ></a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <table class="table">
+          <tbody>
+            {% for recipe in recipes %}
+              {% if recipe.uploaded_by.email == user.email %}
+            <tr>
+                <th scope="row"><a href="show_recipe/{{recipe.id}}">
+                {% for image in recipe.recipe_has_images.all %}
+                <img src="../media/{{image.cover}}" alt="" class="card-img-top" width="100px" height="150px">
+                {% endfor %}
+              </a></th>
+              <td><h3><a href="show_recipe/{{recipe.id}}">{{recipe.dish}}</a></h3></td>
+              <td><h5>{{recipe.hours}} hour(s) {{recipe.minutes}} minutes</h5></td>
+              <td><h3>${{recipe.cost}}</h3></td>
+              <td ><h3><a href="user_bio/{{user.id}}"> {{user.first_name}} {{user.last_name}}</a></h3></td>
+              <td>
+                <form action="/delete" method="POST">
+                  {% csrf_token %}
+                  <a href="/edit_recipe_page/{{recipe.id}}" class="btn btn-outline-light btn-sm">Edit</a>
+                  <input type="hidden" name="delete" value={{recipe.id}}>
+                  <input type="submit" class="btn btn-outline-light btn-sm" value="Delete">
+                </form>
+              </td>
+            </tr>
+              {% elif user in recipe.users_who_like.all %}
+            <tr>
+              <th scope="row"><a href="show_recipe/{{recipe.id}}">
+                {% for image in recipe.recipe_has_images.all %}
+                <img src="../media/{{image.cover}}" alt="" class="card-img-top" width="100px" height="150px">
+                {% endfor %}
+              </a></th>
+              <td><h3><a href="show_recipe/{{recipe.id}}">{{recipe.dish}}</a></h3></td>
+              <td><h5>{{recipe.hours}} hour(s) {{recipe.minutes}} minutes</h5></td>
+              <td><h3>${{recipe.cost}}</h3></td>
+              <td><h3><a href="user_bio/{{recipe.uploaded_by.id}}"> {{recipe.uploaded_by.first_name}} {{recipe.uploaded_by.last_name}}</a></h3></td>
+              <td>
+                <form action="/unlike" method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="unlike" value={{recipe.id}}>
+                  <input type="submit" class="btn btn-outline-light btn-sm" value="Unlike">
+                </form>
+            </td>
+            </tr>
+              {% else %}
+            <tr>
+              <th scope="row"><a href="show_recipe/{{recipe.id}}">
+                {% for image in recipe.recipe_has_images.all %}
+                <img src="../media/{{image.cover}}" alt="" class="card-img-top" width="100px" height="150px">
+                {% endfor %}
+              </a></th>
+              <td><h3><a href="show_recipe/{{recipe.id}}">{{recipe.dish}}</a></h3></td>
+              <td><h5>{{recipe.hours}} hour(s) {{recipe.minutes}} minutes</h5></td>
+              <td><h3>${{recipe.cost}}</h3></td>
+              <td><h3><a href="user_bio/{{recipe.uploaded_by.id}}"> {{recipe.uploaded_by.first_name}} {{recipe.uploaded_by.last_name}}</a></h3></td>
+              <td>
+                <form action="/like" method="POST">
+                  {% csrf_token %}
+                <input type="hidden" name="like" value={{recipe.id}}>
+                <input type="submit" class="btn btn-outline-light btn-sm" value="Like">
+                </form>
+              </td>
+            </tr>
+              {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+  <script>(function(d, s, id) { var js, pjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//www.tickcounter.com/static/js/loader.js"; pjs.parentNode.insertBefore(js, pjs); }(document, "script", "tickcounter-sdk"));</script>
+</body>
+</html>

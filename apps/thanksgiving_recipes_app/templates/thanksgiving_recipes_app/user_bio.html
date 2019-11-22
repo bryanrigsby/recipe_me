@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Thanksgiving Recipes</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'thanksgiving_recipes_app/style/index.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-trans sticky-top">
+        <a href="/main" class="navbar-brand btn btn-outline-light">Recipe-Me!</a>
+        <form action="/clear" method="POST">
+            {% csrf_token %}
+            <span class="text-white navbar-brand"><a href="/user_bio/{{logged_in_user.id}}">Welcome {{logged_in_user.first_name}} {{logged_in_user.last_name}}</a></span>
+            <a href="/add_recipe_page" class="btn btn-sm btn-outline-light">Add Recipe</a>
+            <input class="btn btn-sm btn-outline-light" type="submit" value="Logout">
+        </form>
+    </nav>
+
+    <div class="container">
+        <div class="row top">
+          <div class="col">
+            <a data-type="countdown"
+                data-name="Countdown to Thanksgiving!"
+                data-bg_color="rgba(0, 0, 0, 0.0)"
+                data-name_color="rgba(245, 245, 245,1)"
+                data-border_color="rgba(0,0,0,0)"
+                data-digits_color="rgba(245, 245, 245,1)"
+                data-last_unit_color="rgba(245, 245, 245,1)"
+                data-dt="2019-11-28 12:30:55"
+                data-show_units="false"
+                data-timezone="America/Chicago"
+                style="display: block; width: 100%; position: relative; padding-bottom: 15%"
+                class="tickcounter"
+                href="//www.tickcounter.com"
+            ></a>
+        </div>
+      </div>
+
+        
+
+        {% if user.email == request.session.email %}
+        <div class="row top">
+          <div class="col-5">
+            <form action="/edit_user/{{user.id}}" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="first_name">First Name</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" value="{{logged_in_user.first_name}}">
+              </div>
+              <div class="form-group">
+                <label for="last_name">Last Name</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" value="{{logged_in_user.last_name}}">
+              </div>
+            </div>
+            <div class="col-7">
+              <div class="form-group">
+                <label for="bio">Bio</label>
+                <textarea class="form-control" id="bio" cols="30" rows="5" name="bio">{{logged_in_user.bio}}</textarea>
+              </div>
+              <input type="submit" class="btn btn-outline-light btn-sm float-right" value="Edit User">
+            </div>
+          </form>
+        </div>
+
+          {% for recipe in user.recipes_uploaded.all %}
+          <div class="row top">
+            <div class="col">
+              <div class="card top" style="max-width: 100%">
+                <div class="row no-gutters">
+                  <div class="col-2">
+                    {% for image in recipe.recipe_has_images.all %}
+                    <a href="/show_recipe/{{recipe.id}}"><img src="../media/{{image.cover}}" alt="" class="card-img-top" width="100px" height="150px"></a>
+                    {% endfor %}
+                  </div>
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-3">
+                                <div class="row">
+                                  <div class="col">
+                                      <a href="/show_recipe/{{recipe.id}}" class="link_style"><h5 class="card-title">{{recipe.dish}}</h5></a>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col">
+                                    <h5 class="card-title">{{recipe.hours}} hour(s) {{recipe.minutes}} minutes</h5>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col">
+                                    <h5 class="card-title">${{recipe.cost}}</h5>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-3">
+                                <h5 class="card-title">{{recipe.ingredients}}</h5>
+                              </div>
+                              <div class="col-5">
+                                <h5 class="card-title">{{recipe.instructions}}</h5>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {% endfor %}
+        {% else %}
+
+        
+
+        {% for recipe in user.recipes_uploaded.all %}
+
+        <div class="row top">
+            <div class="col">
+              <div class="card top" style="max-width: 100%">
+                  <div class="row no-gutters">
+                    <div class="col-2">
+                        <img src="{% static 'thanksgiving_recipes_app/images/smile.jpeg' %}" alt="" class="card-img-bottom" width="143px" height="162px">
+                    </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-4">
+                            <div class="row">
+                              <div class="col">
+                                <h5 class="card-title">{{user.first_name}} {{user.last_name}}</h5>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-8">
+                            <h5 class="card-title">{{user.bio}}</h5>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+        <div class="row top">
+            <div class="col">
+              <div class="card top" style="max-width: 100%">
+                  <div class="row no-gutters">
+                    <div class="col-2">
+                      {% for image in recipe.recipe_has_images.all %}
+                      <a href="/show_recipe/{{recipe.id}}"><img src="../media/{{image.cover}}" alt="" class="card-img-top" width="100px" height="150px"></a>
+                      {% endfor %}
+                    </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-3">
+                              <div class="row">
+                                <div class="col">
+                                    <a href="/show_recipe/{{recipe.id}}" class="link_style"><h5 class="card-title">{{recipe.dish}}</h5></a>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col">
+                                  <h5 class="card-title">{{recipe.hours}} hour(s) {{recipe.minutes}} minutes</h5>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col">
+                                  <h5 class="card-title">${{recipe.cost}}</h5>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-3">
+                              <h5 class="card-title">{{recipe.ingredients}}</h5>
+                            </div>
+                            <div class="col-4">
+                              <h5 class="card-title">{{recipe.instructions}}</h5>
+                            </div>
+                            <div class="col-2">
+                              <a href="/user_bio/{{recipe.uploaded_by.id}}" class="disabled btn btn-sm btn-outline-dark">{{recipe.uploaded_by.first_name}} {{recipe.uploaded_by.last_name}}</a>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+       
+
+
+     
+
+
+      {% if messages %}
+      <ul class='messages'>
+          {% for message in messages %}
+              <li {% if message.tags %} class='{{message.tags}}' {% endif %}> {{message }} </li>
+          {% endfor %}
+      </ul>
+      {% endif %}
+
+</div>
+<script>(function(d, s, id) { var js, pjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//www.tickcounter.com/static/js/loader.js"; pjs.parentNode.insertBefore(js, pjs); }(document, "script", "tickcounter-sdk"));</script>
+      </body>
+      </html>
+
+
+
+
+
+
+      

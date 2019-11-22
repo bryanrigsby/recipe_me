@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Thanksgiving Recipes</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'thanksgiving_recipes_app/style/index.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-trans sticky-top">
+        <a href="/main" class="navbar-brand btn btn-outline-light">Recipe-Me!</a>
+        <form action="/clear" method="POST">
+            {% csrf_token %}
+            <span class="text-white navbar-brand"><a href="/user_bio/{{user.id}}">Welcome {{user.first_name}} {{user.last_name}}</a></span>
+            <a href="/add_recipe_page" class="btn btn-sm btn-outline-light">Add Recipe</a>
+            <input class="btn btn-sm btn-outline-light" type="submit" value="Logout">
+        </form>
+    </nav>
+
+    <div class="container">
+        <div class="row top">
+          <div class="col">
+            <a data-type="countdown"
+                data-name="Countdown to Thanksgiving!"
+                data-bg_color="rgba(0, 0, 0, 0.0)"
+                data-name_color="rgba(245, 245, 245,1)"
+                data-border_color="rgba(0,0,0,0)"
+                data-digits_color="rgba(245, 245, 245,1)"
+                data-last_unit_color="rgba(245, 245, 245,1)"
+                data-dt="2019-11-28 12:30:55"
+                data-show_units="false"
+                data-timezone="America/Chicago"
+                style="display: block; width: 100%; position: relative; padding-bottom: 15%"
+                class="tickcounter"
+                href="//www.tickcounter.com"
+            ></a>
+        </div>
+      </div>
+
+        {% if recipe.uploaded_by.email == request.session.email %}
+
+        <div class="row top">
+            <div class="col">
+              <div class="card top" style="max-width: 100%">
+                  <div class="row no-gutters">
+                    <div class="col-2">
+                      {% for image in recipe.recipe_has_images.all %}
+                      <img src="../media/{{image.cover}}" alt="" class="card-img-top" width="100px" height="150px">
+                      {% endfor %}
+                    </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-3">
+                              <div class="row">
+                                <div class="col">
+                                  <h5 class="card-title">{{recipe.dish}}</h5>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col">
+                                  <h5 class="card-title">{{recipe.hours}} hour(s) {{recipe.minutes}} minutes</h5>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col">
+                                  <h5 class="card-title">${{recipe.cost}}</h5>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-3">
+                              <h5 class="card-title">{{recipe.ingredients}}</h5>
+                            </div>
+                            <div class="col-5">
+                              <h5 class="card-title">{{recipe.instructions}}</h5>
+                            </div>
+                            <div class="col-1">
+                              {% if request.session.email == comment.comment_by_user.email or request.session.email == recipe.uploaded_by.email %}
+                              <form action="/delete" method="POST">
+                                {% csrf_token %}
+                                <div class="row">
+                                  <div class="col-6">
+                                      <a href="/edit_recipe_page/{{recipe.id}}" class="top btn btn-sm btn-outline-dark">Edit</a>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-6">
+                                    <input type="hidden" name="delete" value="{{recipe.id}}">
+                                    <input type="submit" class="btn btn-sm btn-outline-dark" value="Delete">
+                                  </div>
+                                </div>
+                              </form>
+                              {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+       
+
+        {% else %}
+
+
+        <div class="row top">
+            <div class="col">
+              <div class="card top" style="max-width: 100%">
+                  <div class="row no-gutters">
+                    <div class="col-2">
+                      {% for image in recipe.recipe_has_images.all %}
+                      <img src="../media/{{image.cover}}" alt="" class="card-img-top" width="100px" height="150px">
+                      {% endfor %}
+                    </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-3">
+                              <div class="row">
+                                <div class="col">
+                                  <h5 class="card-title">{{recipe.dish}}</h5>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col">
+                                  <h5 class="card-title">{{recipe.hours}} hour(s) {{recipe.minutes}} minutes</h5>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col">
+                                  <h5 class="card-title">${{recipe.cost}}</h5>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-3">
+                              <h5 class="card-title">{{recipe.ingredients}}</h5>
+                            </div>
+                            <div class="col-4">
+                              <h5 class="card-title">{{recipe.instructions}}</h5>
+                            </div>
+                            <div class="col-2">
+                              <a href="/user_bio/{{recipe.uploaded_by.id}}" class="btn btn-sm btn-outline-dark">{{recipe.uploaded_by.first_name}} {{recipe.uploaded_by.last_name}}</a>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        {% endif %}
+
+        <div class="row">
+          <div class="col-2"></div>
+          <div class="col-8">
+        {% if messages %}
+        <ul class='messages error'>
+        {% for message in messages %}
+            <li {% if message.tags %} class='{{message.tags}}' {% endif %}> {{message }} </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+        </div>
+        <div class="col2"></div>
+        </div>
+
+        <div class="row">
+          <div class="col-2"></div>
+          <div class="col-8">
+            <div class="card top" style="max-width: 900px">
+              <div class="row no-gutters">
+                  <div class="card-body">
+                    <div class="row">
+                      <form action="/comment/{{recipe.id}}" method="POST">
+                        {% csrf_token %}
+                        <div class="col-9">
+                          <textarea cols="80" rows="3"  name="comment" class="card-text" placeholder="Leave a comment"></textarea>
+                        </div>
+                          <input type="hidden" name="recipe_comment" value="{{recipe.id}}">
+                        <div class="col-3">
+                          <input type="submit" class="btn btn-sm btn-outline-dark card-text" value="Add Comment">
+                        </div>
+                      </form>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-2"></div>
+      </div>
+
+      
+
+      
+
+        {% for comment in recipe.recipe_has_comments.all %}
+        <div class="row">
+          <div class="col-2"></div>
+          <div class="col-8">
+        <div class="card top" style="max-width: 900px">
+          <div class="row no-gutters">
+            <div class="col-2">
+              <img src="{% static 'thanksgiving_recipes_app/images/smile.jpeg' %}" alt="" class="card-img" width="75px" height="125px">
+            </div>
+            <div class="col-10">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-3">
+                    <h5 class="card-title">{{comment.comment_by_user.first_name}} {{comment.comment_by_user.last_name}}</h5>
+                  </div>
+                  <div class="col-5">
+                    <p class="card-text">{{comment.comment}}</p>
+                  </div>
+                  <div class="col-4">
+                    <p class="card-text"><small class="text-muted">{{comment.created_at}}</small></p>
+                    <p class="card-text">
+                    {% if request.session.email == comment.comment_by_user.email or request.session.email == recipe.uploaded_by.email %}
+                        <form action="/delete_comment/{{recipe.id}}" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="delete_comment" value="{{comment.id}}">
+                          <input type="submit" value="Delete Comment" class="btn btn-sm btn-outline-dark">
+                        </form>
+                    {% endif %}
+                  </p>
+                </div>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-2"></div>
+      </div>
+          {% endfor %}
+
+
+          
+    </div>
+    <script>(function(d, s, id) { var js, pjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//www.tickcounter.com/static/js/loader.js"; pjs.parentNode.insertBefore(js, pjs); }(document, "script", "tickcounter-sdk"));</script>
+      </body>
+      </html>
