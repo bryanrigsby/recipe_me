@@ -13,4 +13,4 @@ Recipe site where users can create profiles, upload recipes, like, and comment o
 
 ![Screen Shot 2019-11-22 at 11 18 44 AM](https://user-images.githubusercontent.com/12769416/69446598-5c798500-0d1a-11ea-9aec-385152ca8e85.png)
 
-![mage](https://user-images.githubusercontent.com/12769416/82107454-7609f100-96ed-11ea-95f5-dbac55cd9968.jpg)
+
